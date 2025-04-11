@@ -13,7 +13,7 @@ def split_audio(file_path, output_dir, chunk_duration):
         "-i", file_path,
         "-f", "segment",
         "-segment_time", str(chunk_duration),
-        "-c", "copy",
+        "-c:a", "aac",
         os.path.join(output_dir, "chunk_%03d.m4a")
     ]
     subprocess.run(split_command, check=True)
@@ -52,10 +52,18 @@ def main():
     os.makedirs(PROCESSED_FOLDER, exist_ok=True)
     os.makedirs(CHUNKS_FOLDER, exist_ok=True)
 
-    audio_files = [os.path.join(INPUT_FOLDER, f) for f in os.listdir(INPUT_FOLDER) if f.endswith(".m4a")]
+    audio_files = [
+        os.path.join(INPUT_FOLDER, f)
+        for f in os.listdir(INPUT_FOLDER)
+        if f.lower().endswith((".m4a", ".mp3", ".wav"))
+    ]
+
     if not audio_files:
-        print("No `.m4a` files found in the input folder. Exiting...")
+        print("No supported audio files (.m4a, .mp3, .wav) found in the input folder. Exiting...")
         return
+    else:
+        print("Found audio files:", [os.path.basename(f) for f in audio_files])
+
 
     model_size = DEFAULT_MODEL
     chunk_duration = DEFAULT_CHUNK_DURATION
