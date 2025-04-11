@@ -1,6 +1,2 @@
-# .gitignore
-venv/
-__pycache__/
-*.pyc
-.DS_Store
-*.m4a
+whisper
+tqdm
